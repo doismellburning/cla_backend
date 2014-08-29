@@ -1,6 +1,6 @@
 from .base import *
 TEST_APPS = (
-    'django_pdb',
+    #'django_pdb',
 )
 
 INSTALLED_APPS += TEST_APPS
