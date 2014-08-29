@@ -146,12 +146,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django_statsd',
-    'south',
     'rest_framework',
     'pagedown',
     'provider',
-    'provider.oauth2',
-    'reports'
+    'provider.oauth2'
 )
 
 PROJECT_APPS = (
@@ -291,3 +289,5 @@ STATSD_HOST = os.environ.get('STATSD_HOST', 'localhost')
 STATSD_PORT = os.environ.get('STATSD_PORT', 8125)
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+
+#TEST_RUNNER = 'django.test.simple.DjangoTestSuiteRunner'
