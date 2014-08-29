@@ -30,28 +30,28 @@ class ProviderClosureVolumeViewTestCase(SimpleTestCase):
 
     def test_access_denied_without_logging_in(self):
         # get
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertResponseRequiresLogin(response)
 
         # post
-        response = self.client.post(self.url)
+        response = self.client.post(self.url, follow=True)
         self.assertResponseRequiresLogin(response)
 
     def test_access_denied_if_user_not_staff(self):
         self.create_and_login_user(is_staff=False)
 
         # get
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertResponseRequiresLogin(response)
 
         # post
-        response = self.client.post(self.url)
+        response = self.client.post(self.url, follow=True)
         self.assertResponseRequiresLogin(response)
 
     def test_get_success_if_user_is_staff(self):
         self.create_and_login_user()
 
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in response.context)
 
