@@ -187,7 +187,7 @@
 	    "fields": {
 	        "category": 3,
 	        "provider": 1,
-	        "weighted_distribution": 0.5,
+	        "weighted_distribution": 19.0,
 	        "modified": "2014-04-23T14:47:01.468Z",
 	        "created": "2014-04-23T14:47:01.438Z"
 	    }
@@ -198,7 +198,7 @@
 	    "fields": {
 	        "category": 2,
 	        "provider": 1,
-	        "weighted_distribution": 0.5,
+	        "weighted_distribution": 19.0,
 	        "modified": "2014-04-23T14:47:01.472Z",
 	        "created": "2014-04-23T14:47:01.442Z"
 	    }
@@ -220,7 +220,7 @@
 	    "fields": {
 	        "category": 3,
 	        "provider": 2,
-	        "weighted_distribution": 0.5,
+	        "weighted_distribution": 19.0,
 	        "modified": "2014-04-23T14:47:01.472Z",
 	        "created": "2014-04-23T14:47:01.442Z"
 	    }
@@ -231,7 +231,7 @@
 	    "fields": {
 	        "category": 2,
 	        "provider": 2,
-	        "weighted_distribution": 0.5,
+	        "weighted_distribution": 19.0,
 	        "modified": "2014-04-23T14:47:01.472Z",
 	        "created": "2014-04-23T14:47:01.442Z"
 	    }
@@ -242,7 +242,7 @@
 	    "fields": {
 	        "category": 3,
 	        "provider": 3,
-	        "weighted_distribution": 0.5,
+	        "weighted_distribution": 19.0,
 	        "modified": "2014-04-23T14:47:01.472Z",
 	        "created": "2014-04-23T14:47:01.442Z"
 	    }
@@ -253,7 +253,7 @@
 	    "fields": {
 	        "category": 2,
 	        "provider": 3,
-	        "weighted_distribution": 0.5,
+	        "weighted_distribution": 19.0,
 	        "modified": "2014-04-23T14:47:01.472Z",
 	        "created": "2014-04-23T14:47:01.442Z"
 	    }
@@ -264,7 +264,7 @@
 	    "fields": {
 	        "category": 3,
 	        "provider": 4,
-	        "weighted_distribution": 0.5,
+	        "weighted_distribution": 19.0,
 	        "modified": "2014-04-23T14:47:01.472Z",
 	        "created": "2014-04-23T14:47:01.442Z"
 	    }
@@ -275,7 +275,7 @@
 	    "fields": {
 	        "category": 2,
 	        "provider": 4,
-	        "weighted_distribution": 0.5,
+	        "weighted_distribution": 19.0,
 	        "modified": "2014-04-23T14:59:44.467Z",
 	        "created": "2014-04-23T14:59:44.430Z"
 	    }
@@ -286,7 +286,7 @@
 	    "fields": {
 	        "category": 3,
 	        "provider": 5,
-	        "weighted_distribution": 0.5,
+	        "weighted_distribution": 24.0,
 	        "modified": "2014-04-23T14:59:44.468Z",
 	        "created": "2014-04-23T14:59:44.434Z"
 	    }
@@ -297,7 +297,7 @@
 	    "fields": {
 	        "category": 2,
 	        "provider": 5,
-	        "weighted_distribution": 0.5,
+	        "weighted_distribution": 24.0,
 	        "modified": "2014-04-23T14:59:44.468Z",
 	        "created": "2014-04-23T14:59:44.434Z"
 	    }
