@@ -1,0 +1,124 @@
+# If we receive X-Forwarded-Proto, pass it through; otherwise, pass along the
+# scheme used to connect to this server
+map $http_x_forwarded_proto $proxy_x_forwarded_proto {
+  default $http_x_forwarded_proto;
+  ''      $scheme;
+}
+
+# If we receive Upgrade, set Connection to "upgrade"; otherwise, delete any
+# Connection header that may have been passed to this server
+map $http_upgrade $proxy_connection {
+  default upgrade;
+  ''      '';
+}
+
+#log settings
+log_format logstash_json '{ "@timestamp": "$time_iso8601", '
+        '"@fields": { '
+        '"remote_addr": "$remote_addr", '
+        '"remote_user": "$remote_user", '
+        '"body_bytes_sent": $body_bytes_sent, '
+        '"request_time": $request_time, '
+        '"request_uri": "$request_uri", '
+        '"status": $status, '
+        '"request": "$request", '
+        '"request_method": "$request_method", '
+        '"http_referrer": "$http_referer", '
+        '"http_user_agent": "$http_user_agent", '
+        '"bytes_sent": $bytes_sent, '
+        '"gzip_ratio": "$gzip_ratio", '
+        '"http_host": "$host", '
+        '"sent_http_location": "$sent_http_location", '
+        '"server_name": "$server_name", '
+        '"server_port": "$server_port", '
+        '"upstream_addr": "$upstream_addr", '
+        '"upstream_response_length": "$upstream_response_length", '
+        '"upstream_response_time": "$upstream_response_time", '
+        '"upstream_status": "$upstream_status" '
+        '} }';
+
+        access_log /var/log/nginx/access.log logstash_json;
+        error_log /var/log/nginx/error.log error;
+
+upstream nodejs {
+  server 127.0.0.1:8005;
+}
+
+server {
+        listen 80 default_server;
+        server_name _; # This is just an invalid value which will never trigger on a real hostname.
+        error_log /proc/self/fd/2;
+        access_log /proc/self/fd/1;
+        return 503;
+}
+
+{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
+upstream {{ $host }} {
+
+{{ range $index, $value := $containers }}
+
+        {{ $addrLen := len $value.Addresses }}
+        {{/* If only 1 port exposed, use that */}}
+        {{ if eq $addrLen 1 }}
+                {{ with $address := index $value.Addresses 0 }}
+                   # {{$value.Name}}
+                   server {{ $address.IP }}:{{ $address.Port }};
+                {{ end }}
+
+        {{/* If more than one port exposed, use the one matching VIRTUAL_PORT env var */}}
+        {{ else if $value.Env.VIRTUAL_PORT }}
+                {{ range $i, $address := $value.Addresses }}
+                   {{ if eq $address.Port $value.Env.VIRTUAL_PORT }}
+                   # {{$value.Name}}
+                   server {{ $address.IP }}:{{ $address.Port }};
+                   {{ end }}
+                {{ end }}
+
+        {{/* Else default to standard web port 80 */}}
+        {{ else }}
+                {{ range $i, $address := $value.Addresses }}
+                        {{ if eq $address.Port "80" }}
+                        # {{$value.Name}}
+                        server {{ $address.IP }}:{{ $address.Port }};
+                        {{ end }}
+                {{ end }}
+        {{ end }}
+{{ end }}
+}
+
+server {
+        gzip  on;
+        gzip_proxied        any;
+        gzip_types          text/html text/plain text/xml application/xml application/xml+rss application/json application/javascript text/javascript text/css application/font-woff font/otf application/font-otf application/font application/otf application/octet-stream application/x-font-otf;
+        server_name {{ $host }};
+        proxy_buffering off;
+        access_log      /var/log/nginx/cla_backend/access.log logstash_json;
+        error_log       /var/log/nginx/cla_backend/error.log error;
+
+        # lb pass-thru config
+        real_ip_header X-Forwarded-For;
+        set_real_ip_from 10.7.12.0/24;
+        set_real_ip_from 10.6.12.0/24;
+        set_real_ip_from 172.16.0.0/16;
+
+        location / {
+                proxy_pass http://{{ $host }};
+                proxy_set_header Host $http_host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $proxy_x_forwarded_proto;
+
+                # HTTP 1.1 support
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $proxy_connection;
+        }
+
+        location /static/ {
+        alias /home/app/django/cla_backend/static/;
+        add_header 'Cache-Control' 'no-cache="Set-Cookie, Set-Cookie2",no-transform';
+        add_header X-Content-Type-Options nosniff;
+        add_header X-Frame-Options SAMEORIGIN;
+        }
+}
+{{ end }}

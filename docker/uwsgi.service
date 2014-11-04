@@ -1,6 +1,11 @@
 #!/bin/bash
 
 ! $([[  "$CLA_ENV" == "prod" || "$CLA_ENV" == "staging" ]]) ||  grep sentry /etc/hosts > /dev/null 2>&1 || echo "$SENTRY_IPADDRESS $SENTRY_HOSTNAME" >> /etc/hosts
+
+if ! [[ $ALLOWED_HOSTS =~ $(hostname -i) ]] ; then
+  ALLOWED_HOSTS+=",$(hostname -i)" && echo "export ALLOWED_HOSTS=$ALLOWED_HOSTS" >> /etc/container_environment.sh
+fi
+
 cd /home/app/django
 # Manage sync db
 python manage.py syncdb --noinput >> /var/log/wsgi/db_scripts.log 2>&1
